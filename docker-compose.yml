@@ -1,0 +1,34 @@
+# Schema version Docker Compose
+version: '3.7'
+
+# Service yang diperlukan
+services:
+  # Service item-db
+  item-db:
+    # image database
+    image: mongo:3
+    # volume untuk persistent data 
+    volumes:
+      - app-db:/data/db
+    # environment variables untuk mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME:test
+      - MONGO_INITDB_ROOT_PASSWORD:test
+    # restart policy
+    restart: always
+  # Service Aplikasi
+  item-app:
+    # image aplikasi dari github packages
+    image: ghcr.io/vans-id/item-app:v1
+    # port mapping ke host 80
+    ports:
+      - 80:8080
+    # memastikan service berjalan setelah item-db
+    depends_on:
+      - item-db
+    # restart policy
+    restart: always
+
+# Docker Volume yang digunakan
+volumes:
+  app-db:
